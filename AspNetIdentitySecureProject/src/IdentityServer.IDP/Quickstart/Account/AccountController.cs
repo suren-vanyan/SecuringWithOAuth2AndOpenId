@@ -57,6 +57,7 @@ namespace IdentityServer.IDP
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> Login(string returnUrl)
+        
         {
             // build a model so we know what to show on the login page
             var vm = await BuildLoginViewModelAsync(returnUrl);
