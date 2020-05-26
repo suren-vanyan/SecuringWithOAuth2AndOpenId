@@ -14,24 +14,28 @@ namespace IdentityServer.IDP
     {
         public static List<TestUser> Users = new List<TestUser>
         {
-            new TestUser{
+            new TestUser
+            {
                 SubjectId = Guid.NewGuid().ToString(),
-                Username = "Alice", 
-                Password = "password", 
-                Claims = 
+                Username = "Alice",
+                Password = "password",
+                Claims =
                 {
-                   new Claim("gien_name","Alice"),
-                   new Claim("family_name","Smith")
+                   new Claim("given_name","Alice"),
+                   new Claim("family_name","Smith"),
+                    new Claim("address","Arshakunyac 44/1")
                 }
             },
-            new TestUser{
-                SubjectId = Guid.NewGuid().ToString(), 
-                Username = "Bob", 
-                Password = "password", 
-                Claims = 
+            new TestUser
+            {
+                SubjectId = Guid.NewGuid().ToString(),
+                Username = "Bob",
+                Password = "password",
+                Claims =
                 {
-                    new Claim("gien_name","Bob"),
-                   new Claim("family_name","Smith")
+                   new Claim("given_name","Bob"),
+                   new Claim("family_name","Smith"),
+                   new Claim("address","Cahrbax Pos")
                 }
             }
         };

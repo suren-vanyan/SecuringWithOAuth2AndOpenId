@@ -123,7 +123,7 @@ namespace ImageGallery.Client.Controllers
             var code = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.Code);
 
             Debug.WriteLine($"Identity token:{identityToken}");
-            Debug.WriteLine($"Identity code:{code}");
+            Debug.WriteLine($"Code:{code}");
             foreach (var claim in User.Claims)
             {
                 Debug.WriteLine($"Claim type: {claim.Type} - Claim value: {claim.Value}");

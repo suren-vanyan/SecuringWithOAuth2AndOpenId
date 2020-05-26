@@ -9,6 +9,7 @@ using Microsoft.Net.Http.Headers;
 using System;
 using Microsoft.AspNetCore.Authentication;
 using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace ImageGallery.Client
 {
@@ -19,6 +20,7 @@ namespace ImageGallery.Client
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -40,18 +42,26 @@ namespace ImageGallery.Client
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
-            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,options=>
+            {
+            })
             .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme,options=>
             {
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.Authority = "https://localhost:44318/";
                 options.ClientId = "imagecontainerclient";
-                options.ResponseType = "code";
+                options.ResponseType = "code"; 
                 options.UsePkce = true;
-                options.Scope.Add("openid");
-                options.Scope.Add("profile");
-                options.SaveTokens = true;
+                //options.Scope.Add("openid"); //by default
+                //options.Scope.Add("profile");//by default
+                options.Scope.Add("address");
+                options.ClaimActions.DeleteClaim("sid");
+                options.ClaimActions.DeleteClaim("idp");
+                options.ClaimActions.DeleteClaim("s_hash");
+                options.ClaimActions.DeleteClaim("auth_time");
+                options.SaveTokens = true;  
                 options.ClientSecret = "secret";
+                options.GetClaimsFromUserInfoEndpoint = true;
 
             });
         }
@@ -79,6 +89,7 @@ namespace ImageGallery.Client
 
                 foreach (var coockie in coockies)
                 {
+                    if(coockie.Value!=null)
                     Debug.WriteLine($"Coockies Client Key: {coockie.Key} Value: {coockie.Value}");
                 }
                 await next.Invoke();
