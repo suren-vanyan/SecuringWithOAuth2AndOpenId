@@ -23,7 +23,8 @@ namespace IdentityServer.IDP
                 {
                    new Claim("given_name","Alice"),
                    new Claim("family_name","Smith"),
-                    new Claim("address","Arshakunyac 44/1")
+                   new Claim("address","Arshakunyac 44/1"),
+                   new Claim("role","FreeUser")
                 }
             },
             new TestUser
@@ -35,7 +36,8 @@ namespace IdentityServer.IDP
                 {
                    new Claim("given_name","Bob"),
                    new Claim("family_name","Smith"),
-                   new Claim("address","Cahrbax Pos")
+                   new Claim("address","Cahrbax Pos"),
+                   new Claim("role","PaingUser")
                 }
             }
         };

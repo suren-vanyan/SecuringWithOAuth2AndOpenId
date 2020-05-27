@@ -10,6 +10,7 @@ using System;
 using Microsoft.AspNetCore.Authentication;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
+using IdentityModel;
 
 namespace ImageGallery.Client
 {
@@ -37,6 +38,13 @@ namespace ImageGallery.Client
                 client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
             });
 
+            services.AddHttpClient("IDPClient", configure =>
+            {
+                configure.BaseAddress = new Uri("https://localhost:44318/");
+                configure.DefaultRequestHeaders.Clear();
+                configure.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
+            });
+
             services.AddAuthentication( options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -44,6 +52,7 @@ namespace ImageGallery.Client
             })
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,options=>
             {
+                options.AccessDeniedPath = "/Authorization/Accessdenied";
             })
             .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme,options=>
             {
@@ -54,15 +63,22 @@ namespace ImageGallery.Client
                 options.UsePkce = true;
                 //options.Scope.Add("openid"); //by default
                 //options.Scope.Add("profile");//by default
+                options.Scope.Add("roles");
                 options.Scope.Add("address");
                 options.ClaimActions.DeleteClaim("sid");
                 options.ClaimActions.DeleteClaim("idp");
                 options.ClaimActions.DeleteClaim("s_hash");
                 options.ClaimActions.DeleteClaim("auth_time");
+                options.ClaimActions.MapUniqueJsonKey("role", "role");
+                //options.ClaimActions.MapUniqueJsonKey("address", "address");
                 options.SaveTokens = true;  
                 options.ClientSecret = "secret";
                 options.GetClaimsFromUserInfoEndpoint = true;
-
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    NameClaimType = JwtClaimTypes.GivenName,
+                    RoleClaimType = JwtClaimTypes.Role
+                };
             });
         }
 
@@ -83,17 +99,17 @@ namespace ImageGallery.Client
                 app.UseHsts();
             }
 
-            app.Use(async (context, next) =>
-            {
-                var coockies = context.Request.Cookies;
+            //app.Use(async (context, next) =>
+            //{
+            //    var coockies = context.Request.Cookies;
 
-                foreach (var coockie in coockies)
-                {
-                    if(coockie.Value!=null)
-                    Debug.WriteLine($"Coockies Client Key: {coockie.Key} Value: {coockie.Value}");
-                }
-                await next.Invoke();
-            });
+            //    foreach (var coockie in coockies)
+            //    {
+            //        if(coockie.Value!=null)
+            //        Debug.WriteLine($"Coockies Client Key: {coockie.Key} Value: {coockie.Value}");
+            //    }
+            //    await next.Invoke();
+            //});
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -41,16 +41,17 @@ namespace IdentityServer.IDP
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Use(async (context, next) =>
-            {
-                var coockies = context.Request.Cookies;
+            //app.Use(async (context, next) =>
+            //{
+            //    var coockies = context.Request.Cookies;
 
-                foreach (var coockie in coockies)
-                {
-                    Debug.WriteLine($"Coockies IDP Key: {coockie.Key} Value: {coockie.Value}");
-                }
-                await next.Invoke();
-            });
+            //    foreach (var coockie in coockies)
+            //    {
+            //        Debug.WriteLine($"Coockies IDP Key: {coockie.Key} Value: {coockie.Value}");
+            //    }
+            //    await next.Invoke();
+            //});
+
             // uncomment if you want to add MVC
             app.UseStaticFiles();
             app.UseRouting();
